@@ -24,7 +24,8 @@ default_args = dict(
     owner = 'datapopcorn',
     email = ['datapopcorn@gmail.com'],
     email_on_failure = True,
-    retries = 3
+    retries = 3,
+    retry_delay = timedelta(minutes=1)
     )
 
 with DAG(
