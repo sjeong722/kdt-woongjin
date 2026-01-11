@@ -1,7 +1,6 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.utils.dates import days_ago
-import datetime
+import pendulum
 
 def print_hello():
     print("=" * 60)
@@ -11,7 +10,7 @@ def print_hello():
 
 default_args = {
     'owner': 'datapopcorn',
-    'start_date': days_ago(1),
+    'start_date': pendulum.today('UTC').add(days=-1),
 }
 
 with DAG(
