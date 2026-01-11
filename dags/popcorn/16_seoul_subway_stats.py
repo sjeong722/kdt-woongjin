@@ -12,7 +12,7 @@ SEOUL_API_KEY = "5a4c61745532696e393557726c696f"
 default_args = dict(
     owner = 'datapopcorn',
     email = ['datapopcorn@gmail.com'],
-    email_on_failure = True,
+    email_on_failure = False,
     retries = 1
 )
 

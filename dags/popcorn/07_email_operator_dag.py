@@ -24,7 +24,7 @@ https://airflow.apache.org/docs/apache-airflow/2.2.0/_api/airflow/operators/emai
 default_args = dict(
     owner = 'datapopcorn',
     email = ['datapopcorn@gmail.com'],
-    email_on_failure = True,
+    email_on_failure = False,
     retries = 3,
     retry_delay = timedelta(minutes=1)
     )

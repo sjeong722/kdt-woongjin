@@ -18,7 +18,7 @@ TARGET_STATIONS = [
 default_args = dict(
     owner = 'datapopcorn',
     email = ['datapopcorn@gmail.com'],
-    email_on_failure = True,
+    email_on_failure = False,
     retries = 1
 )
 

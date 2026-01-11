@@ -10,7 +10,7 @@ from airflow.providers.smtp.operators.smtp import EmailOperator
 default_args = dict(
     owner = 'popcorn',
     email = ['datapopcorn@gmail.com'],
-    email_on_failure = True,
+    email_on_failure = False,
     retries = 3
     )
 

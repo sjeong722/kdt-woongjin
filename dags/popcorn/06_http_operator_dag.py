@@ -20,7 +20,7 @@ https://airflow.apache.org/docs/apache-airflow-providers-http/stable/_api/airflo
 default_args = dict(
     owner = 'popcorn',
     email = ['datapopcorn@gmail.com'],
-    email_on_failure = True,
+    email_on_failure = False,
     retries = 3
     )
 
