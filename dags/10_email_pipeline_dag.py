@@ -56,6 +56,7 @@ with DAG(
     
     send_email = EmailOperator(
         task_id='send_email',
+        conn_id='gmail_connection',
 
         to='datapopcorn@gmail.com',
         subject='User Registered - {{ ds_nodash }}',
