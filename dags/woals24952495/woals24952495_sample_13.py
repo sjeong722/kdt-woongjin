@@ -9,7 +9,7 @@ with DAG(
     schedule='0 0 * * *',
     catchup=False,
 ) as dag:
-
+ 
     # 1. Create a test table
     create_table = SQLExecuteQueryOperator(
         task_id='create_table',
