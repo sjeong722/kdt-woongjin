@@ -15,7 +15,7 @@ with DAG(
         task_id='create_table',
         conn_id='sojeong_supabase_conn',
         sql="""
-            CREATE TABLE IF NOT EXISTS airflow_test_table (
+            CREATE TABLE IF NOT EXISTS yoonsojeong0722_airflow_test_table (
                 id SERIAL PRIMARY KEY,
                 message TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -28,7 +28,7 @@ with DAG(
         task_id='insert_data',
         conn_id='sojeong_supabase_conn',
         sql="""
-            INSERT INTO airflow_test_table (message) 
+            INSERT INTO yoonsojeong0722_airflow_test_table (message) 
             VALUES ('Hello from Airflow! Supabase Connection SUCCESS :)');
         """
     )
