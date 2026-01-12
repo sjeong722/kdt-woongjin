@@ -4,7 +4,7 @@ import pendulum
 
 # Define the DAG
 with DAG(
-    dag_id='cometj456_supabase_test_dag_v2',
+    dag_id='cometj456_supabase_test_dag',
     start_date=pendulum.today('Asia/Seoul').add(days=-1), # 한국 시간 기준
     schedule='0 0 * * *',
     catchup=False,
@@ -19,7 +19,7 @@ with DAG(
             CREATE TABLE IF NOT EXISTS cometj456_test_table (
                 id SERIAL PRIMARY KEY,
                 message TEXT,
-                created_at TIMESTAMPTZ DEFAULT now()
+                created_at timestamp with time zone not null default (now() AT TIME ZONE 'Asia/Seoul'::text)
             );
         """
     )
