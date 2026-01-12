@@ -19,7 +19,7 @@ with DAG(
             CREATE TABLE IF NOT EXISTS cometj456_test_table (
                 id SERIAL PRIMARY KEY,
                 message TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')
             );
         """
     )
@@ -30,7 +30,7 @@ with DAG(
         conn_id='cometj456_supabase_conn',
         sql="""
             INSERT INTO cometj456_test_table (message) 
-            VALUES ('Hello from Airflow! Supabase Connection SUCCESS :)');
+            VALUES ('Hello from Airflow! 한국 시간 테스트입니다 :)');
         """
     )
 
