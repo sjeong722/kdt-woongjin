@@ -11,7 +11,7 @@ default_args = dict(
 
 with DAG(
     dag_id="qoxjf135_tutorial_dag",
-    start_date=pendulum.datetime(2025, 8, 1, tz='Asia/Seoul'),
+    start_date=pendulum.datetime(2025, 8, 2, tz='Asia/Seoul'),
     schedule="30 10 * * *", # cron 표현식
     default_args = default_args,
     catchup=False
