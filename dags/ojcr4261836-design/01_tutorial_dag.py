@@ -3,14 +3,14 @@ from airflow import DAG
 from airflow.providers.standard.operators.empty import EmptyOperator
 
 default_args = dict(
-    owner = 'tjgk1203', # 개별 DAG 관리자
-    email = ['tjgk1203@naver.com'],
+    owner = 'ojcr4261836-design', # 개별 DAG 관리자
+    email = ['ojcr4261836@gmail.com'],
     email_on_failure = False,
     retries = 3
     )
 
 with DAG(
-    dag_id="tjgk1203_01_tutorial_dag", # ✅ 폴더명이 포함됨
+    dag_id="ojcr4261836-design_01_tutorial_dag",
     start_date=pendulum.datetime(2025, 8, 1, tz='Asia/Seoul'),
     schedule="30 10 * * *", # cron 표현식
     default_args = default_args,
