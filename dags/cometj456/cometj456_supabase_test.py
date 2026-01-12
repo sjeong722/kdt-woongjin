@@ -19,7 +19,7 @@ with DAG(
             CREATE TABLE IF NOT EXISTS cometj456_test_table (
                 id SERIAL PRIMARY KEY,
                 message TEXT,
-                created_at TIMESTAMPTZ DEFAULT now()
+                created_at timestamp with time zone not null default (now() AT TIME ZONE 'Asia/Seoul'::text)
             );
         """
     )
