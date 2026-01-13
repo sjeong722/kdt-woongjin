@@ -6,6 +6,7 @@ from airflow.decorators import task
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook 
 from airflow.providers.slack.operators.slack import SlackAPIPostOperator 
+from airflow.operators.python import ShortCircuitOperator 
 
 # Configuration
 SEOUL_API_KEY = "75704f786c786f6f38346170715555"  # 실제 운영 시 Variable이나 Connection으로 관리 권장
@@ -122,7 +123,23 @@ with DAG(
 
     ingestion_task = collect_and_insert_subway_data()
 
-    # 4. 슬랙 알림 전송
+    # 4. 오전 10시 실행인지 확인
+    def check_10am_run(**context):
+        # 실행 기준 시간(logical_date) 가져오기 (UTC)
+        logical_date = context['logical_date']
+        # 한국 시간으로 변환
+        seoul_time = logical_date.in_timezone('Asia/Seoul')
+        logging.info(f"Current Logical Date (Seoul): {seoul_time}")
+        
+        # 10시 00분인지 확인
+        return seoul_time.hour == 10 and seoul_time.minute == 0
+
+    check_first_run = ShortCircuitOperator(
+        task_id='check_10am_run',
+        python_callable=check_10am_run
+    )
+
+    # 5. 슬랙 알림 전송
     send_slack = SlackAPIPostOperator(
         task_id='send_slack_message_api',
         slack_conn_id='xoosl033110_slack_conn',
@@ -130,4 +147,4 @@ with DAG(
         text=':white_check_mark: Seoul Subway Data Ingestion Completed! Records inserted: {{ ti.xcom_pull(task_ids="collect_and_insert_subway_data") }}'
     )
 
-    create_table >> ingestion_task >> send_slack
+    create_table >> ingestion_task >> check_first_run >> send_slack
