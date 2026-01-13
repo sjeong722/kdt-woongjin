@@ -94,4 +94,4 @@ with DAG(
 
     ingestion_task = collect_and_insert_subway_data()
 
-    create_table >> ingestion_task
+    ingestion_task
