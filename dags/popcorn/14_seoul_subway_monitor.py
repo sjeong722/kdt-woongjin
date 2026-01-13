@@ -24,7 +24,7 @@ default_args = dict(
 with DAG(
     dag_id="popcorn_14_seoul_subway_monitor",
     start_date=pendulum.today('Asia/Seoul').add(days=-1),
-    schedule="*/30 * * * *",  # 5분마다 실행
+    schedule="@daily",  # 매일 한 번 실행
     catchup=False,
     default_args=default_args,
     tags=['subway', 'project'],
