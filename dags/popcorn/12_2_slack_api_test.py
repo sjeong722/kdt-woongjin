@@ -15,7 +15,7 @@ with DAG(
     send_slack = SlackAPIPostOperator(
         task_id='send_slack_message_api',
         slack_conn_id='popcorn_slack_conn',
-        channel='#p0_study',  # 보낼 채널명을 입력하세요 (예: #general)
+        channel='#bot-playground',  # 보낼 채널명을 입력하세요 (예: #general)
         text=':rocket: Airflow -> Slack API (Token) 연결 성공! 12_2 테스트 DAG입니다.',
-        username='Airflow Bot',
+        username='웅진팝콘봇',
     )
