@@ -5,6 +5,8 @@ from airflow import DAG
 from airflow.decorators import task
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook 
+from airflow.providers.slack.operators.slack import SlackAPIPostOperator
+
 
 # Configuration
 SEOUL_API_KEY = "7a477a41507769733130346472497642"  # 실제 운영 시 Variable이나 Connection으로 관리 권장
@@ -101,5 +103,5 @@ with DAG(
         channel='#bot-playground',
         text='적재 성공!'
     )
-    create_table >> ingestion_task >> send_slack
+    ingestion_task >> send_slack
 
