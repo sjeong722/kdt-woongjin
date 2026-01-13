@@ -25,7 +25,7 @@ TABLE_NAME = 'realtime_subway_positions_v2'
 default_args = dict(
     owner = 'cometj456',
     email = ['cometj456@gmail.com'],
-    email_on_failure = False,
+    email_on_failure = True,
     retries = 1
 )
 
