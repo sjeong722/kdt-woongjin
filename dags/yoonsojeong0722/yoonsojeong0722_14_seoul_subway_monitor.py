@@ -33,7 +33,7 @@ with DAG(
 
     # 1. 테이블 생성 (없을 경우)
     create_table = SQLExecuteQueryOperator(
-        task_id='create_table',
+        task_id='sj_create_table',
         conn_id='supabase_conn',  
         sql="""
             CREATE TABLE IF NOT EXISTS realtime_subway_positions_v2 (  
@@ -57,7 +57,7 @@ with DAG(
     )
 
     # 2. 데이터 수집 및 적재 태스크
-    @task(task_id='collect_and_insert_subway_data')
+    @task(task_id='sj_collect_and_insert_subway_data')
     def collect_and_insert_subway_data():
         hook = PostgresHook(postgres_conn_id='sojeong_supabase_conn')
         conn = hook.get_sqlalchemy_engine()
@@ -117,16 +117,24 @@ with DAG(
             logging.info("Insert completed.")
         else:
             logging.info("No records to insert.")
+        
+        return len(all_records)
 
-    ingestion_task = collect_and_insert_subway_data()
+    ingestion_task = collect_and_insert_subway_data()  
 
     create_table >> ingestion_task
 
-    # 슬랙 알림 전송
-    send_slack = SlackAPIPostOperator(
-        task_id='send_slack_message_api',
-        slack_conn_id='sojeong_supabase_conn',
-        channel='#bot-playground',
-        text='::서울 지하철 실시간 위치 추출 DAG가 성공적으로 실행되었습니다'
-    )
-    ingestion_task >> send_slack
+
+    # 3. 슬랙 알림 태스크
+
+    send_slack_notification = SlackAPIPostOperator(
+         task_id='sj_send_slack_notification',
+         slack_conn_id='sojeong_slack_conn',
+         channel='#bot-playground',
+         text=":white_check_mark: *지하철 데이터 적재 완료 >.< *\n"
+              "- 대상 테이블: `realtime_subway_positions_v2`\n"
+              "- 적재된 레코드 수: {{ task_instance.xcom_pull(task_ids='collect_and_insert_subway_data') }}개\n",
+         username='웅진소정봇'
+     )
+    ingestion_task >> send_slack_notification
+      
