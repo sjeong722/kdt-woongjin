@@ -35,7 +35,7 @@ with DAG(
         task_id='create_table',
         conn_id='supabase_conn',
         sql="""
-            CREATE TABLE IF NOT EXISTS realtime_subway_positions (
+            CREATE TABLE IF NOT EXISTS realtime_subway_positions (  
                 id SERIAL PRIMARY KEY,
                 line_id VARCHAR(100),
                 line_name VARCHAR(100),
