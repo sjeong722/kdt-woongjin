@@ -97,11 +97,11 @@ with DAG(
     ingestion_task = collect_and_insert_subway_data()
 
 # 슬랙 알림 전송
-    send_slack = SlackAPIPostOperator(
-        task_id='send_slack_message_api',
-        slack_conn_id='wiseyoung710_slack_conn',
-        channel='#bot-playground',
-        text='적재 성공!'
-    )
-    ingestion_task >> send_slack
+#    send_slack = SlackAPIPostOperator(
+#        task_id='send_slack_message_api',
+#        slack_conn_id='wiseyoung710_slack_conn',
+#        channel='#bot-playground',
+#        text='적재 성공!'
+#   )
+#    ingestion_task >> send_slack
 
