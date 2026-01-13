@@ -97,11 +97,12 @@ with DAG(
 
     # 주의: 슬랙 앱(Bot)을 해당 채널에 먼저 초대해야 메시지 전송이 가능합니다.
     # 예: 채널에서 '/invite @App_Name' 입력
-    send_slack = SlackAPIPostOperator(
-        task_id='send_slack_message_api',
+    send_slack_failure = SlackAPIPostOperator(
+        task_id='send_slack_message_failure',
         slack_conn_id='purple45663_slack_conn',
-        channel='#bot-playground',  # 보낼 채널명을 입력하세요 (예: #general)
-        text=':rocket: Airflow -> Slack API (Token) 연결 성공! seoul_subway_monitor DAG에서 데이터 수집을 완료했습니다.'
+        channel='#bot-playground',
+        text=':rotating_light: [데이터 적재 실패] seoul_subway_monitor DAG에서 에러가 발생했습니다.',
+        trigger_rule='one_failed'  # 앞의 태스크가 하나라도 실패하면 실행
     )
 
-    ingestion_task >> send_slack
+    ingestion_task >> send_slack_failure
