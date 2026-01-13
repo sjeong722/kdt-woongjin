@@ -7,7 +7,7 @@ from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook 
 
 # Configuration
-SEOUL_API_KEY = "524a6b574a616e73383646426f7a6a"  # 실제 운영 시 Variable이나 Connection으로 관리 권장
+SEOUL_API_KEY = "6a77636b51616e7337307370656c4a"  # 실제 운영 시 Variable이나 Connection으로 관리 권장
 TARGET_LINES = [
     "1호선", "2호선", "3호선", "4호선", "5호선", 
     "6호선", "7호선", "8호선", "9호선",
