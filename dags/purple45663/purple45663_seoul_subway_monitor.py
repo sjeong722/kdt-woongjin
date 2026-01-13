@@ -25,7 +25,7 @@ default_args = dict(
 with DAG(
     dag_id="purple45663_seoul_subway_monitor",
     start_date=pendulum.today('Asia/Seoul').add(days=-1),
-    schedule="*/5 * * * *",  # 5분마다 실행
+    schedule="* * * * *",  # 1분마다 실행 (Airflow 최소 주기)
     catchup=False,
     default_args=default_args,
     tags=['subway', 'project', 'purple45663'],
