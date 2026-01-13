@@ -120,3 +120,12 @@ with DAG(
     ingestion_task = collect_and_insert_subway_data()
 
     create_table >> ingestion_task
+
+    # 슬랙 알림 전송
+    send_slack = SlackAPIPostOperator(
+        task_id='send_slack_message_api',
+        slack_conn_id='sojeong_supabase_conn',
+        channel='#bot-playground',
+        text='::서울 지하철 실시간 위치 추출 DAG가 성공적으로 실행되었습니다'
+    )
+    ingestion_task >> send_slack
