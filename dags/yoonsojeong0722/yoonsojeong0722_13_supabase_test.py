@@ -5,7 +5,7 @@ import pendulum
 # Define the DAG
 with DAG(
     dag_id='yoonsojeong0722_13_supabase_test_dag',
-    start_date=pendulum.datetime(2025, 1, 1, tz='Asia/Seoul'),
+    start_date=pendulum.today('UTC').add(days=-1),
     schedule='0 0 * * *',
     catchup=False,
     tags=['supabase', 'test'],
