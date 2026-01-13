@@ -12,7 +12,6 @@ with DAG(
     send_slack = SlackWebhookOperator(
         task_id='send_slack_message',
         slack_webhook_conn_id='popcorn_slack_conn',
-
-        message=':tada: Airflow -> Slack 연결 성공! 깃허브 액션을 통해 배포된 DAG에서 보낸 메시지입니다.',
+        message=':tada: Airflow -> PopcornSlack 연결 성공! 깃허브 액션을 통해 배포된 DAG에서 보낸 메시지입니다.',
         username='Airflow Bot',
     )
