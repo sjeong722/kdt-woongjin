@@ -63,7 +63,7 @@ with DAG(
         
         all_records = []
         
-        for line in TARGET_LINES:
+        for line in TARGET_LINES:  
             try:
                 # API 호출
                 url = f"http://swopenapi.seoul.go.kr/api/subway/{SEOUL_API_KEY}/json/realtimePosition/1/100/{line}"
