@@ -17,5 +17,5 @@ with DAG(
         slack_conn_id='wiseyoung710_slack_conn',
         channel='#bot-playground',  # 보낼 채널명을 입력하세요 (예: #general)
         text=':rocket: Airflow -> Slack API (Token) 연결 성공! 12_2 테스트 DAG입니다.',
-        username='airflow',
+        username='화영봇',
     )
