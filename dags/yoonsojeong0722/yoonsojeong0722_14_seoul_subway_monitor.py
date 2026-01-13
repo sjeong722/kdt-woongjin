@@ -5,6 +5,7 @@ from airflow import DAG
 from airflow.decorators import task
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook 
+from airflow.providers.slack.operators.slack import SlackAPIPostOperator
 
 # Configuration
 SEOUL_API_KEY = "634f415258736a653638734147456d"  # 실제 운영 시 Variable이나 Connection으로 관리 권장
@@ -33,9 +34,9 @@ with DAG(
     # 1. 테이블 생성 (없을 경우)
     create_table = SQLExecuteQueryOperator(
         task_id='create_table',
-        conn_id='supabase_conn',
+        conn_id='supabase_conn',  
         sql="""
-            CREATE TABLE IF NOT EXISTS realtime_subway_positions (  
+            CREATE TABLE IF NOT EXISTS realtime_subway_positions_v2 (  
                 id SERIAL PRIMARY KEY,
                 line_id VARCHAR(100),
                 line_name VARCHAR(100),
@@ -63,7 +64,7 @@ with DAG(
         
         all_records = []
         
-        for line in TARGET_LINES:
+        for line in TARGET_LINES:  
             try:
                 # API 호출
                 url = f"http://swopenapi.seoul.go.kr/api/subway/{SEOUL_API_KEY}/json/realtimePosition/1/100/{line}"
@@ -107,7 +108,7 @@ with DAG(
             import pandas as pd
             df = pd.DataFrame(all_records)
             df.to_sql(
-                'realtime_subway_positions',
+                'realtime_subway_positions_v2',
                 con=conn,
                 if_exists='append',
                 index=False,
@@ -120,3 +121,12 @@ with DAG(
     ingestion_task = collect_and_insert_subway_data()
 
     create_table >> ingestion_task
+
+    # 슬랙 알림 전송
+    send_slack = SlackAPIPostOperator(
+        task_id='send_slack_message_api',
+        slack_conn_id='sojeong_supabase_conn',
+        channel='#bot-playground',
+        text='::서울 지하철 실시간 위치 추출 DAG가 성공적으로 실행되었습니다'
+    )
+    ingestion_task >> send_slack
