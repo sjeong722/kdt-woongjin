@@ -7,25 +7,6 @@ from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook 
 from airflow.providers.slack.operators.slack import SlackAPIPostOperator
 
-with DAG(
-    dag_id='purple45663_12_2_slack_api_test_dag',
-    start_date=pendulum.today('UTC').add(days=-1),
-    schedule='0 0 * * *',
-    catchup=False,
-    tags=['purple45663', 'slack', 'api'],
-) as dag:
-
-    # 주의: 슬랙 앱(Bot)을 해당 채널에 먼저 초대해야 메시지 전송이 가능합니다.
-    # 예: 채널에서 '/invite @App_Name' 입력
-    send_slack = SlackAPIPostOperator(
-        task_id='send_slack_message_api',
-        slack_conn_id='purple45663_slack_conn',
-        channel='#bot-playground',  # 보낼 채널명을 입력하세요 (예: #general)
-        text=':rocket: Airflow -> Slack API (Token) 연결 성공! seoul_subway_monitor DAG입니다.'
-    )
-
-
-
 # Configuration
 SEOUL_API_KEY = "6e71466270636b733633654f6b4a7a"  # 실제 운영 시 Variable이나 Connection으로 관리 권장
 TARGET_LINES = [
@@ -114,4 +95,13 @@ with DAG(
 
     ingestion_task = collect_and_insert_subway_data()
 
-    ingestion_task
+    # 주의: 슬랙 앱(Bot)을 해당 채널에 먼저 초대해야 메시지 전송이 가능합니다.
+    # 예: 채널에서 '/invite @App_Name' 입력
+    send_slack = SlackAPIPostOperator(
+        task_id='send_slack_message_api',
+        slack_conn_id='purple45663_slack_conn',
+        channel='#bot-playground',  # 보낼 채널명을 입력하세요 (예: #general)
+        text=':rocket: Airflow -> Slack API (Token) 연결 성공! seoul_subway_monitor DAG에서 데이터 수집을 완료했습니다.'
+    )
+
+    ingestion_task >> send_slack
