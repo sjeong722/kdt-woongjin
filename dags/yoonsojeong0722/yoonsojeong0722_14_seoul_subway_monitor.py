@@ -123,10 +123,11 @@ with DAG(
     create_table >> ingestion_task
 
 
-    # 2. 슬랙 알림 태스크
+    # 3. 슬랙 알림 태스크
+
     send_slack_notification = SlackAPIPostOperator(
          task_id='sj_send_slack_notification',
-         slack_conn_id='sojeong_supabase_conn',
+         slack_conn_id='sojeong_slack_conn',
          channel='#bot-playground',
          text=":white_check_mark: *지하철 데이터 적재 완료 >.< *\n"
               "- 대상 테이블: `realtime_subway_positions_v2`\n"
