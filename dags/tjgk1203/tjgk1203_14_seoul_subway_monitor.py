@@ -15,7 +15,7 @@ TARGET_LINES = [
 ]
 
 default_args = dict(
-    owner = 'tjgk1203',
+    owner = 'airflow',
     email = ['tjgk1203@gmail.com'],
     email_on_failure = False,
     retries = 1
