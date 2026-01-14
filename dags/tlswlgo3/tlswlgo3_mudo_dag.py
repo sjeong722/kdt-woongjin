@@ -68,7 +68,7 @@ def collect_and_save_data(**kwargs):
         'q': '무한도전',
         'type': 'video',
         'maxResults': 25, # 25 + 25 = 50 items per run roughly
-        'key': AIzaSyD5prc5qQKqpXTXV_L1enxHUCnauKlUMHI
+        'key': "AIzaSyD5prc5qQKqpXTXV_L1enxHUCnauKlUMHI"
     }
 
     # Fetch 1: Popular
