@@ -10,6 +10,12 @@ sys.path.append(os.path.dirname(__file__))
 # Import run_my_crawler
 from tlswlgo3_infinite_youtube_script import run_my_crawler
 
+def collect_youtube_data_task(**context):
+    from airflow.models import Variable
+    # Jinja 템플릿 에러를 방지하기 위해 실행 시점에 직접 변수를 가져옵니다.
+    api_key = Variable.get("tlswlgo3_youtube_apikey")
+    return run_my_crawler(api_key=api_key)
+
 def load_to_supabase(**context):
     # 이전 태스크(collect_youtube_data)에서 반환한 결과를 XCom으로 가져옴
     results = context['ti'].xcom_pull(task_ids='collect_youtube_data')
@@ -87,10 +93,7 @@ with DAG(
 
     collect_task = PythonOperator(
         task_id='collect_youtube_data',
-        python_callable=run_my_crawler,
-        op_kwargs={
-            'api_key': '{{ var.value.tlswlgo3_youtube_apikey }}'
-        }
+        python_callable=collect_youtube_data_task,
     )
 
     load_to_supabase_task = PythonOperator(
