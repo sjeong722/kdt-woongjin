@@ -26,7 +26,7 @@ with DAG(
     dag_id='infinite_youtube_dag',
     default_args=default_args,
     description='유튜브 데이터를 30분마다 자동 수집',
-    schedule_interval='*/30 * * * *', 
+    schedule='*/30 * * * *', 
     start_date=datetime(2024, 1, 1),
     catchup=False,
 ) as dag:
