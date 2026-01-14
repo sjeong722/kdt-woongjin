@@ -1,6 +1,5 @@
 from airflow import DAG  # Airflow의 핵심인 DAG(작업 흐름)를 만드는 도구
 from airflow.providers.standard.operators.python import PythonOperator  # 파이썬 코드를 실행하는 담당자
-from airflow.providers.smtp.operators.smtp import EmailOperator  # 이메일을 보내는 담당자
 from airflow.models import Variable  # Airflow 변수를 관리하는 도구
 from datetime import datetime, timedelta
 import sys
@@ -78,20 +77,5 @@ with DAG(
         },
     )
 
-    # 2번 작업: 성공 시 이메일 발송 (EmailOperator 사용)
-    send_email = EmailOperator(
-        task_id='send_success_email',
-        # 수신자 이메일을 직접 입력(하드코딩)합니다.
-        to=['qoxjf135@gmail.com', 'kate29397@gmail.com'], 
-        subject='[알림] 유튜브 데이터 수집 완료 (오후 16시 정기 실행)',
-        # 발송용 SMTP 서버는 'qoxjf135_gmail_connection' 설정을 사용합니다.
-        conn_id='qoxjf135_gmail_connection',
-        html_content="""
-        <h3>유튜브 트렌드 수집이 완료되었습니다.</h3>
-        <p>데이터가 DB에 안전하게 저장되었습니다.</p>
-        <p><b>실행 시간(TS):</b> {{ ts }}</p>
-        """,
-    )
-
-    # [D] 작업 순서 정하기: 수집(crawl_task)이 끝나면 메일(send_email)을 보냅니다.
-    crawl_task >> send_email
+    # [D] 작업 순서 정하기: 수집(crawl_task)
+    crawl_task
