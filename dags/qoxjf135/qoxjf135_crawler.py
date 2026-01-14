@@ -2,7 +2,7 @@ from airflow.models import Variable  # Airflow에 저장된 변수를 가져오�
 from googleapiclient.discovery import build  # 구글 서비스(유튜브)를 사용하기 위한 도구
 import pandas as pd  # 데이터를 표 형태로 처리하는 도구
 from datetime import datetime, timedelta, timezone  # 날짜와 시간을 계산하는 도구
-
+##
 class YouTubeTrendCrawler:
     """유튜브에서 키워드별 트렌드 데이터를 수집하는 로봇 클래스"""
     

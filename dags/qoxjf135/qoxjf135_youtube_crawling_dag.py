@@ -4,7 +4,7 @@ from airflow.models import Variable  # Airflow 변수를 관리하는 도구
 from datetime import datetime, timedelta
 import sys
 import os
-
+##
 # 모듈(crawler, database)을 불러오기 위해 현재 폴더의 위치를 파이썬에게 알려줍니다.
 dag_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(dag_path)
