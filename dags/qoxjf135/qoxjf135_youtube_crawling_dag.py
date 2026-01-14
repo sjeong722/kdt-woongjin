@@ -63,7 +63,7 @@ with DAG(
     'youtube_crawling_dag',  # Airflow 화면에 나타날 DAG의 고유 이름
     default_args=default_args,
     description='유튜브 데이터를 수집하고 성공 시 이메일을 보내는 자동화 흐름',
-    schedule_interval='0 16 * * *',  # 매일 16시마다 자동으로 실행합니다.
+    schedule='0 16 * * *',  # 매일 16시마다 자동으로 실행합니다.
     catchup=False,  # 과거의 밀린 작업들은 무시하고 현재부터 실행합니다.
     tags=['유튜브', '크롤링', '알림'],
 ) as dag:
