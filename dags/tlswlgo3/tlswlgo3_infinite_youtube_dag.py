@@ -79,8 +79,8 @@ default_args = {
 with DAG(
     dag_id='tlswlgo3_infinite_challenge_youtube_dag',
     default_args=default_args,
-    description='유튜브 데이터를 30분마다 자동 수집 및 Supabase 적재',
-    schedule='*/30 * * * *', 
+    description='유튜브 데이터 1회성 수집 및 Supabase 적재',
+    schedule='@once', 
     start_date=datetime(2024, 1, 1),
     catchup=False,
 ) as dag:
