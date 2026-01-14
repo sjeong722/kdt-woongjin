@@ -34,7 +34,7 @@ def load_to_supabase(**context):
     CREATE TABLE IF NOT EXISTS tlswlgo3.youtube_videos (
         video_id TEXT PRIMARY KEY,
         channel_id TEXT,
-        title TEXT,
+        channel_title TEXT,
         description TEXT,
         thumbnail_url TEXT,
         view_count BIGINT,
@@ -42,7 +42,7 @@ def load_to_supabase(**context):
         comment_count BIGINT,
         published_at TIMESTAMP,
         collected_at TIMESTAMP
-    );
+    ); 
     """
     pg_hook.run(create_schema_query)
     pg_hook.run(create_table_query)
@@ -52,7 +52,7 @@ def load_to_supabase(**context):
         (
             r['video_id'], 
             r['channel_id'], 
-            r['title'], 
+            r['channel_title'], 
             r['description'], 
             r['thumbnail_url'], 
             int(r['view_count']), 
@@ -69,7 +69,7 @@ def load_to_supabase(**context):
         table='tlswlgo3.youtube_videos',
         rows=rows,
         target_fields=[
-            'video_id', 'channel_id', 'title', 'description', 'thumbnail_url', 
+            'video_id', 'channel_id', 'channel_title', 'description', 'thumbnail_url', 
             'view_count', 'like_count', 'comment_count', 'published_at', 'collected_at'
         ],
         replace=True,  # video_id가 같은 데이터가 있으면 업데이트 (UPSERT 효과)
