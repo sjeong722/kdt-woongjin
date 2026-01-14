@@ -3,7 +3,7 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook  # Airflow에
 class SupabaseManager:
     """Supabase(데이터베이스)에 직접 명령(SQL)을 내려서 데이터를 저장하는 담당자"""
     
-    def __init__(self, conn_id='supabase_conn'):
+    def __init__(self, conn_id='qoxjf135_supabase_conn'):
         # Airflow 관리자 화면에서 만든 'supabase_conn' 연결 정보를 사용하여 DB와 통신할 준비를 합니다.
         # Supabase는 PostgreSQL이라는 종류의 DB를 사용하므로 PostgresHook을 사용합니다.
         self.hook = PostgresHook(postgres_conn_id=conn_id)

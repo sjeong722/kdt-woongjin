@@ -32,7 +32,7 @@ def youtube_crawling_task(keyword, total_days, **kwargs):
     try:
         # 도구들을 준비합니다.
         crawler = YouTubeTrendCrawler()
-        db = SupabaseManager(conn_id='supabase_conn')
+        db = SupabaseManager(conn_id='qoxjf135_supabase_conn')
         
         # 1. 유튜브에서 데이터를 가져옵니다.
         summary_df = crawler.get_historical_data(keyword, total_days=total_days)
@@ -60,7 +60,7 @@ def youtube_crawling_task(keyword, total_days, **kwargs):
 
 # [C] DAG 정의: 작업의 이름, 실행 시간(스케줄) 등을 설정합니다.
 with DAG(
-    'youtube_crawling_dag',  # Airflow 화면에 나타날 DAG의 고유 이름
+    'qoxjf135_youtube_crawling_dag',  # Airflow 화면에 나타날 DAG의 고유 이름
     default_args=default_args,
     description='유튜브 데이터를 수집하고 성공 시 이메일을 보내는 자동화 흐름',
     schedule='0 16 * * *',  # 매일 16시마다 자동으로 실행합니다.
@@ -85,7 +85,7 @@ with DAG(
         to=['qoxjf135@gmail.com', 'kate29397@gmail.com'], 
         subject='[알림] 유튜브 데이터 수집 완료 (오후 16시 정기 실행)',
         # 발송용 SMTP 서버는 'mail_connection' 설정을 사용합니다.
-        conn_id='mail_connection',
+        conn_id='qoxjf135_supabase_conn',
         html_content="""
         <h3>유튜브 트렌드 수집이 완료되었습니다.</h3>
         <p>데이터가 DB에 안전하게 저장되었습니다.</p>
