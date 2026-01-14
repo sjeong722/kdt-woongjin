@@ -22,7 +22,7 @@ dag = DAG(
     'woals24952495_seoul_subway_delay_calculator', # <--- DAG ID 변경 (유니크해야 함)
     default_args=default_args,
     description='10분마다 Supabase 테이블 갱신 및 지연시간 계산',
-    schedule='*/10 6-10 * * *',  # [변경] 매일 06시-10시, 10분 간격 (KST 기준)
+    schedule='*/10 * * * *',  # [변경] 10분마다 실행 (테스트용)
     start_date=pendulum.datetime(2023, 1, 1, tz='Asia/Seoul'),   # [변경] KST 설정
     catchup=False,                     # 과거 밀린 작업은 실행 안 함
     tags=['subway', 'supabase', 'woals24952495'], # <--- Tag 추가
