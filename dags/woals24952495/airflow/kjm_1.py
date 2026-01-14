@@ -27,8 +27,8 @@ default_args = dict(
 
 with DAG(
     dag_id="woals24952495_subway_smart_collector", # 통합 DAG ID
-    start_date=pendulum.datetime(2026, 1, 15, 5, 0, tz='Asia/Seoul'), # 1월 15일 새벽 05시 정각에 시작
-    schedule="* * * * *",  # 15일 05시부터 중단 없이 매분 계속 실행
+    start_date=pendulum.datetime(2026, 1, 15, 5, 30, tz='Asia/Seoul'), # 1월 15일 새벽 05시 30분 정각에 시작
+    schedule="* * * * *",  # 15일 05시 30분부터 중단 없이 매분 계속 실행
     catchup=False,
     default_args=default_args,
     tags=['subway', 'project', 'multi_key'],
