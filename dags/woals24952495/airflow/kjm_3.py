@@ -20,9 +20,9 @@ default_args = dict(
     retries = 1
 ) 
 with DAG(
-    dag_id="woals24952495_subway_test_1830", # <--- [테스트용 변경]
+    dag_id="woals24952495_subway_test_1845", # <--- [테스트 시간 변경]
     start_date=pendulum.today('Asia/Seoul').add(days=-1),
-    schedule="40-59 18 * * *",  # 18:40 ~ 18:59 매분 실행 (20분간)
+    schedule="45-59 18 * * *",  # 18:45 ~ 18:59 매분 실행 (15분간)
     catchup=False,
     default_args=default_args,
     tags=['subway', 'project', 'woals24952495'], # <--- [변경 완료]
@@ -77,6 +77,32 @@ with DAG(
                 method='multi' # 성능 향상을 위해 multi insert
             )
             logging.info("Insert completed.")
+            
+            # [자동 가공] Supabase View 업데이트 (도착/출발 이벤트 요약)
+            try:
+                logging.info("Updating test1_realtime_summary view...")
+                view_sql = """
+                DROP VIEW IF EXISTS test1_realtime_summary;
+                CREATE VIEW test1_realtime_summary AS
+                SELECT 
+                    DATE(last_rec_time) as created_date, 
+                    line_name,
+                    station_name,
+                    up_down, 
+                    regexp_replace(train_code, '[^0-9]', '', 'g') as train_code_num,
+                    is_express,
+                    dest_station_name,
+                    MIN(last_rec_time) FILTER (WHERE train_status IN (0, 1)) as actual_arrival,
+                    MIN(last_rec_time) FILTER (WHERE train_status = 2) as actual_departure
+                FROM final_realtime_subway
+                WHERE train_status IN (0, 1, 2)
+                GROUP BY 1, 2, 3, 4, 5, 6, 7
+                ORDER BY created_date DESC, actual_arrival DESC;
+                """
+                hook.run(view_sql)
+                logging.info("View update completed.")
+            except Exception as e:
+                logging.error(f"Error updating view: {e}")
         else:
             logging.info("No records to insert.")
     ingestion_task = collect_and_insert_subway_data()
