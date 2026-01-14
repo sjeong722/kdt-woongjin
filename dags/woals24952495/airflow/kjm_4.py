@@ -77,6 +77,32 @@ with DAG(
                 method='multi' # 성능 향상을 위해 multi insert
             )
             logging.info("Insert completed.")
+            
+            # [자동 가공] Supabase 진짜 테이블 생성 (test1_realtime_summary_table)
+            try:
+                logging.info("Creating actual processed table (test1_realtime_summary_table)...")
+                summary_sql = """
+                DROP TABLE IF EXISTS test1_realtime_summary_table;
+                CREATE TABLE test1_realtime_summary_table AS
+                SELECT 
+                    DATE(last_rec_time) as created_date, 
+                    line_name,
+                    station_name,
+                    up_down, 
+                    regexp_replace(train_code, '[^0-9]', '', 'g') as train_code_num,
+                    is_express,
+                    dest_station_name,
+                    MIN(last_rec_time) FILTER (WHERE train_status IN (0, 1)) as actual_arrival,
+                    MIN(last_rec_time) FILTER (WHERE train_status = 2) as actual_departure
+                FROM final_realtime_subway
+                WHERE train_status IN (0, 1, 2)
+                GROUP BY 1, 2, 3, 4, 5, 6, 7
+                ORDER BY created_date DESC, actual_arrival DESC;
+                """
+                hook.run(summary_sql)
+                logging.info("Processed table update completed.")
+            except Exception as e:
+                logging.error(f"Error updating processed table: {e}")
         else:
             logging.info("No records to insert.")
     ingestion_task = collect_and_insert_subway_data()

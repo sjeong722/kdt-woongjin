@@ -7,22 +7,22 @@ from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 # Configuration
-SEOUL_API_KEY = "43434e536b776f6137326e4e664152" # <--- [변경 필요] 1번 키
+SEOUL_API_KEY = "434459696c6f6b6b3130347378545273" # <--- [변경 필요] 1번 키
 TARGET_LINES = [
     "1호선", "2호선", "3호선", "4호선", "5호선",
     "6호선", "7호선", "8호선", "9호선",
     "경의중앙선", "공항철도", "수인분당선", "경춘선"
 ]
 default_args = dict(
-    owner = 'woals24952495', # <--- [변경 완료]
+    owner = 'woals24952495', # <--- [변경 완료]   
     email = ['woals24952495@naver.com'], # <--- [변경 완료] (임의 설정)
     email_on_failure = False,
     retries = 1
 ) 
 with DAG(
-    dag_id="woals24952495_subway_test_1800", # <--- [테스트용 변경]
+    dag_id="woals24952495_subway_test_1815", # <--- [테스트 시간 변경]  
     start_date=pendulum.today('Asia/Seoul').add(days=-1),
-    schedule="0-19 18 * * *",  # 18:00 ~ 18:19 매분 실행 (20분간)
+    schedule="0-9 19 * * *",  # 19:00 ~ 19:09 매분 실행 (10분간)
     catchup=False,
     default_args=default_args,
     tags=['subway', 'project', 'woals24952495'], # <--- [변경 완료]
@@ -74,9 +74,43 @@ with DAG(
                 con=conn,
                 if_exists='append',
                 index=False,
-                method='multi' # 성능 향상을 위해 multi insert
+                method='multi'
             )
             logging.info("Insert completed.")
         else:
-            logging.info("No records to insert.")
+            logging.warn("!!! [CRITICAL] No subway records found from API. Check your API KEY or TARGET_LINES. !!!")
+
+        # [자동 가공] Supabase 진짜 테이블 생성 (데이터가 없어도 구조는 생성하도록 밖으로 뺌)
+        try:
+            logging.info("Ensuring summary table exists (test1_realtime_summary_table)...")
+            summary_sql = """
+            -- 1. 원본 테이블이 아예 없을 경우를 대비해 껍데기라도 생성 (에러 방지용)
+            CREATE TABLE IF NOT EXISTS final_realtime_subway (
+                line_id TEXT, line_name TEXT, station_name TEXT, up_down INTEGER,
+                is_express INTEGER, train_code TEXT, train_status INTEGER,
+                last_rec_time TIMESTAMP, dest_station_id TEXT, dest_station_name TEXT
+            );
+
+            -- 2. 가공된 진짜 테이블 생성
+            DROP TABLE IF EXISTS test1_realtime_summary_table;
+            CREATE TABLE test1_realtime_summary_table AS
+            SELECT 
+                DATE(last_rec_time) as created_date, 
+                line_name,
+                station_name,
+                up_down, 
+                regexp_replace(train_code, '[^0-9]', '', 'g') as train_code_num,
+                is_express,
+                dest_station_name,
+                MIN(last_rec_time) FILTER (WHERE train_status IN (0, 1)) as actual_arrival,
+                MIN(last_rec_time) FILTER (WHERE train_status = 2) as actual_departure
+            FROM final_realtime_subway
+            WHERE train_status IN (0, 1, 2)
+            GROUP BY 1, 2, 3, 4, 5, 6, 7
+            ORDER BY created_date DESC, actual_arrival DESC;
+            """
+            hook.run(summary_sql)
+            logging.info("Processed table update attempt completed.")
+        except Exception as e:
+            logging.error(f"Error updating processed table: {e}")
     ingestion_task = collect_and_insert_subway_data()
