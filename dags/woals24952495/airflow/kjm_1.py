@@ -10,7 +10,8 @@ API_KEYS = [
     "54684a47546f683435384d714c6e71", # 1번 키 
     "434459696c6f6b6b3130347378545273", # 2번 키
     "6e71466270636b733633654f6b4a7a", # 3번 키
-    "43434e536b776f6137326e4e664152"  # 4번 키
+    "43434e536b776f6137326e4e664152", # 4번 키
+    "5667524e7167757332364c65594648"  # 5번 키
 ]
 
 TARGET_LINES = [
@@ -40,10 +41,12 @@ with DAG(
         conn = hook.get_sqlalchemy_engine()
         all_records = []
         
+        # [호선 루프] 매 호선(1호선, 2호선...)을 돌 때마다 여기서 시작하여 API 키가 1번부터 다시 시도됩니다.
         for line in TARGET_LINES:
             success = False
             logging.info(f"--- Fetching {line} ---")
             
+            # [키 로테이션 루프] 현재 호선에 대해 성공할 때까지 1번~4번 키를 순서대로 꺼내어 시도합니다.
             for i, key in enumerate(API_KEYS):
                 try:
                     url = f"http://swopenapi.seoul.go.kr/api/subway/{key}/json/realtimePosition/1/100/{line}"
@@ -73,16 +76,16 @@ with DAG(
                             })
                         logging.info(f"  [Key {i+1}] Success! Found {len(items)} trains.")
                         success = True
-                        break
+                        break # [로테이션 중단] 성공했으므로 현재 키 시도를 멈추고 다음 호선으로 넘어갑니다. (다음 호선은 다시 1번 키부터)
                     
                     elif res_code == 'INFO-200':
                         logging.info(f"  [Key {i+1}] No trains on this line. (OK)")
                         success = True
-                        break
+                        break # [로테이션 중단] 운행 열차가 없어도 정상 응답이므로 현재 호선은 종료하고 다음 호선으로 넘어갑니다.
                     
                     else:
                         logging.warning(f"  [Key {i+1}] API Error: {res_code}. Trying next...")
-                        continue
+                        continue # [키 전환] API 에러가 났으므로 i+1번째 키를 쓰러 건너뜁니다.
 
                 except Exception as e:
                     logging.error(f"  [Key {i+1}] Unexpected Exception: {e}")
