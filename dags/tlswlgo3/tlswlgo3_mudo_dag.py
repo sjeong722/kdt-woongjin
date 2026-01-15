@@ -53,11 +53,10 @@ def collect_and_save_data(**kwargs):
     Collects data from YouTube API and saves strictly defined fields to Supabase.
     searches for '무한도전', combines results by viewCount and date to cover popular and recent.
     """
-    api_key = Variable.get("YOUTUBE_API_KEY", default_var=None)
+    api_key = Variable.get("tlswlgo3_youtube_apikey", default_var=None)
     if not api_key:
         # Fallback to hardcoded key if Variable is missing, though previous turn used hardcoded
-        api_key = "AIzaSyD5prc5qQKqpXTXV_L1enxHUCnauKlUMHI"
-
+        api_key
     logging.info("Starting data collection...")
 
     # We will fetch a mix of popular and recent videos to build the archive
