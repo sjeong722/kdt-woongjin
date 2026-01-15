@@ -60,7 +60,7 @@ with DAG(
         task_id='run_naver_blog_crawling',
         python_callable=naver_blog_crawling_task,
         op_kwargs={
-            'ds': '{{ ds }}', # Airflow 실행 일자 (YYYY-MM-DD)
+            'ds': '{{ yesterday_ds }}', # Airflow 실행 일자 기준 전날 (YYYY-MM-DD)
             'keywords': ['두바이쫀득쿠키','두쫀쿠'],  # 수집할 키워드 목록
             'conn_id': 'dubaicookie_supabase_conn', # Airflow에 등록된 커넥션 ID
         },

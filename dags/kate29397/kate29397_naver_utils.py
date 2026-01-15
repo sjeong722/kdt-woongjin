@@ -29,6 +29,25 @@ class SupabaseManager:
         try:
             self.pg_hook.run(sql, parameters=params)
         except Exception as e:
+            # PK 중복 오류 (시퀀스 불일치) 발생 시 자동 동기화 시도
+            error_msg = str(e)
+            if "duplicate key value violates unique constraint" in error_msg and "naver_blog_trends_pkey" in error_msg:
+                print(f"[*] PK 중복 오류 감지 (id 중복): 시퀀스 동기화를 시도합니다.")
+                try:
+                    # id 시퀀스를 현재 테이블의 최대값 다음으로 재설정
+                    sync_sql = """
+                        SELECT setval(pg_get_serial_sequence('naver_blog_trends', 'id'), 
+                                     COALESCE(MAX(id), 0) + 1, false) 
+                        FROM naver_blog_trends;
+                    """
+                    self.pg_hook.run(sync_sql)
+                    # 동기화 후 다시 시도
+                    self.pg_hook.run(sql, parameters=params)
+                    print(f"[+] 시퀀스 동기화 완료 및 데이터 저장 성공!")
+                    return
+                except Exception as sync_e:
+                    print(f"[!] 시퀀스 동기화 중 오류 발생: {sync_e}")
+            
             print(f"[!] DB 저장 중 오류 발생 ({data.get('date', 'unknown')}): {e}")
             return None
 
