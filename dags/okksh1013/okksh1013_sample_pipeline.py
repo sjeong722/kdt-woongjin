@@ -32,7 +32,7 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
-# DAG 정의 - ⚠️ dag_id에 반드시 'okksh1013'가 포함되어야 합니다!
+## DAG 정의 - ⚠️ dag_id에 반드시 'okksh1013'가 포함되어야 합니다!
 with DAG(
     dag_id='okksh1013_sample_pipeline',  # ✅ 폴더명이 포함됨
     default_args=default_args,
