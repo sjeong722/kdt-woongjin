@@ -5,13 +5,9 @@ import time
 from datetime import datetime, timedelta
 from urllib.parse import quote
 import os
-import sys
-import io
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 
-# 한글 출력 깨짐 방지
-if sys.stdout.encoding != 'utf-8':
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 
 class SupabaseManager:
     """데이터베이스(Supabase/Postgres)와 소통하는 담당자 클래스 (Direct SQL 사용)"""
