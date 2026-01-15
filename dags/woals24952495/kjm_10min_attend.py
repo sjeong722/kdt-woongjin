@@ -22,7 +22,7 @@ dag = DAG(
     'woals24952495_delay_cal', # <--- DAG ID 변경 (06~10시 출근시간 전용)
     default_args=default_args,
     description='06~10시 출근시간 전용 지연시간 계산 (table_attend 비교)',
-    schedule='*/10 6-10 * * *',  # [변경] 매일 06시~10시50분, 10분 간격
+    schedule='*/10 6-9 * * *',  # [변경] 매일 06시~9시50분, 10분 간격
     start_date=pendulum.datetime(2026, 1, 15, tz='Asia/Seoul'),
     catchup=False,                     
     tags=['subway', 'supabase', 'woals24952495', 'attend_only'], 
