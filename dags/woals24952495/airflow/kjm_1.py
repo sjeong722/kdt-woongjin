@@ -51,13 +51,20 @@ with DAG(
                 try:
                     url = f"http://swopenapi.seoul.go.kr/api/subway/{current_key}/json/realtimePosition/1/100/{line}"
                     response = requests.get(url)
+                    
+                    # 1. HTTP 상태 코드 체크 (500 에러 등 예상치 못한 상태 대응)
+                    if response.status_code != 200:
+                        logging.warning(f"Key {i+1} failed with HTTP {response.status_code}. Trying next key...")
+                        working_key_index = i + 1
+                        continue
+
                     data = response.json()
                     
-                    # 용량 초과(ERROR-290) 또는 인증 오류(INFO-100) 체크
-                    if 'RESULT' in data and data['RESULT']['CODE'] in ['ERROR-290', 'INFO-100']:
-                        logging.warning(f"Key {i+1} failed ({data['RESULT']['CODE']}). Trying next key...")
-                        working_key_index = i + 1 # 다음 키로 인덱스 업데이트
-                        continue 
+                    # 2. API 결과 코드 체크 (RESULT가 있고 INFO-000(성공)이 아닌 경우 모두 다음 키 시도)
+                    if 'RESULT' in data and data['RESULT'].get('CODE') != 'INFO-000':
+                        logging.warning(f"Key {i+1} failed with API Code {data['RESULT'].get('CODE')}. Trying next key...")
+                        working_key_index = i + 1
+                        continue
                     
                     # 정상 데이터인 경우
                     if 'realtimePositionList' in data:
