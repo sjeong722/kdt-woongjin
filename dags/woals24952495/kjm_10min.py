@@ -76,6 +76,34 @@ sql_calc_delay = """
     DROP TABLE IF EXISTS "table_redash";
 
     CREATE TABLE "table_redash" AS
+    WITH daily_schedule AS (
+        {% set h = data_interval_end.in_timezone("Asia/Seoul").hour %}
+        
+        -- 06시 ~ 10시: 출근 시간표
+        {% if h < 10 %}
+            SELECT * FROM "table_attend"
+        
+        -- 10시 ~ 11시: 출근 + 평시 (겹치는 구간)
+        {% elif h == 10 %}
+            SELECT * FROM "table_attend" 
+            UNION ALL 
+            SELECT * FROM "table_noon"
+            
+        -- 11시 ~ 18시: 평시 시간표
+        {% elif h < 18 %}
+            SELECT * FROM "table_noon"
+            
+        -- 18시 ~ 19시: 평시 + 퇴근/막차 (겹치는 구간)
+        {% elif h == 18 %}
+            SELECT * FROM "table_noon" 
+            UNION ALL 
+            SELECT * FROM "table_night"
+            
+        -- 19시 이후: 퇴근/막차 시간표
+        {% else %}
+            SELECT * FROM "table_night"
+        {% endif %}
+    )
     SELECT 
         RT.created_date,
         RT.line_name,
@@ -99,7 +127,7 @@ sql_calc_delay = """
         END AS delay_duration
 
     FROM "table_1hour" AS RT
-    JOIN "table_attend" AS SC
+    JOIN daily_schedule AS SC
         ON RT.line_name = SC.line_name
         AND RT.station_name = SC.station_name
         AND RT.up_down = SC.up_down 
