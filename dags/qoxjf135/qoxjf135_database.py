@@ -1,5 +1,5 @@
 from airflow.providers.postgres.hooks.postgres import PostgresHook  # Airflow에서 DB 연결을 도와주는 도구
-##
+###
 class SupabaseManager:
     """Supabase(데이터베이스)에 직접 명령(SQL)을 내려서 데이터를 저장하는 담당자"""
     
@@ -12,6 +12,8 @@ class SupabaseManager:
         """
         수집된 일별 데이터를 'daily_trends' 테이블에 저장하거나 업데이트하는 함수
         """
+        # 처음에는 그냥 insert 시켜버려 중복 날짜의 데이터가 생기는 이슈 발생
+        # 이후 insert into 에 on conflict시 데이터를 업데이트하는 쿼리문으로 수정 
         # SQL 문법 설명:
         # INSERT INTO ... : 데이터를 삽입합니다.
         # ON CONFLICT (date, keyword) : 만약 날짜와 키워드가 같은 데이터가 이미 있다면,

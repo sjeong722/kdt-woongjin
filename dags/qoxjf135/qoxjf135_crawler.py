@@ -2,16 +2,16 @@ from airflow.models import Variable  # Airflow에 저장된 변수를 가져오�
 from googleapiclient.discovery import build  # 구글 서비스(유튜브)를 사용하기 위한 도구
 import pandas as pd  # 데이터를 표 형태로 처리하는 도구
 from datetime import datetime, timedelta, timezone  # 날짜와 시간을 계산하는 도구
-##
+###
 class YouTubeTrendCrawler:
     """유튜브에서 키워드별 트렌드 데이터를 수집하는 로봇 클래스"""
     
     def __init__(self):
         # 1. Airflow 관리자 화면에서 설정한 'YOUTUBE_API_KEY' 변수를 가져옵니다.
         #    이 키는 유튜브 데이터를 빌려 쓰기 위한 '출입증' 같은 것입니다.
-        self.api_key = Variable.get("QOXJF135_YOUTUBE_API_KEY")
+        self.api_key = Variable.get("kate29397_youtube_api_key")
         if not self.api_key:
-            raise ValueError("[!] Airflow Variable에 'QOXJF135_YOUTUBE_API_KEY'가 없습니다. 설정을 확인해 주세요.")
+            raise ValueError("[!] Airflow Variable에 'kate29397_youtube_api_key'가 없습니다. 설정을 확인해 주세요.")
         
         # 2. 유튜브 API 서비스와 연결합니다. (버전 3 사용)
         self.youtube = build("youtube", "v3", developerKey=self.api_key)
