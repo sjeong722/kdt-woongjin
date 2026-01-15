@@ -9,7 +9,7 @@ class YouTubeTrendCrawler:
     def __init__(self):
         # 1. Airflow 관리자 화면에서 설정한 'YOUTUBE_API_KEY' 변수를 가져옵니다.
         #    이 키는 유튜브 데이터를 빌려 쓰기 위한 '출입증' 같은 것입니다.
-        self.api_key = Variable.get("qoxjf135_youtube_api_key")
+        self.api_key = Variable.get("QOXJF135_YOUTUBE_API_KEY")
         if not self.api_key:
             raise ValueError("[!] Airflow Variable에 'qoxjf135_youtube_api_key'가 없습니다. 설정을 확인해 주세요.")
         
