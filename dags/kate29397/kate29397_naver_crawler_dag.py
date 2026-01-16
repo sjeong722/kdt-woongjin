@@ -1,5 +1,5 @@
-from airflow import DAG  # Airflow의 핵심인 DAG(작업 흐름)를 만드는 도구
-from airflow.providers.standard.operators.python import PythonOperator  # 파이썬 코드를 실행하는 담당자
+from airflow import DAG
+from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 import sys
 import os
