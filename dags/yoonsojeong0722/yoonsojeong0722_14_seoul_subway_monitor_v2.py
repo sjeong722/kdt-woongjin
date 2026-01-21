@@ -23,7 +23,7 @@ default_args = dict(
 )
 
 with DAG(
-    dag_id="yoonsojeong0722_14_seoul_subway_monitor",
+    dag_id="yoonsojeong0722_14_seoul_subway_monitor_v2",
     start_date=pendulum.today('Asia/Seoul').add(days=-1),
     schedule="*/5 * * * *",  # 5분마다 실행
     catchup=False,
@@ -34,7 +34,7 @@ with DAG(
     # 1. 테이블 생성 (없을 경우)
     create_table = SQLExecuteQueryOperator(
         task_id='sj_create_table',
-        conn_id='supabase_conn',  
+        conn_id='sojeong_supabase_conn',  
         sql="""
             CREATE TABLE IF NOT EXISTS realtime_subway_positions_v2 (  
                 id SERIAL PRIMARY KEY,
@@ -133,7 +133,7 @@ with DAG(
          channel='#bot-playground',
          text=":white_check_mark: *지하철 데이터 적재 완료 >.< *\n"
               "- 대상 테이블: `realtime_subway_positions_v2`\n"
-              "- 적재된 레코드 수: {{ task_instance.xcom_pull(task_ids='collect_and_insert_subway_data') }}개\n",
+              "- 적재된 레코드 수: {{ task_instance.xcom_pull(task_ids='sj_collect_and_insert_subway_data') }}개\n",
          username='웅진소정봇'
      )
     ingestion_task >> send_slack_notification
